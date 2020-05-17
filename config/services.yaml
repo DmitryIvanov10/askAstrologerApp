@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    uploads_directory: '%kernel.project_dir%/assets/uploads'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -15,7 +15,11 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude:
+        - '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        - '../src/DataFixtures'
+        - '../src/Form'
+        - '../src/Dto'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -23,5 +27,30 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    App\Controller\Response\AppJsonResponse:
+        shared: false
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\AbstractFileUploader:
+        arguments:
+            $targetDirectory: '%uploads_directory%'
+    App\Service\ImageUploader: ~
+    App\Service\AstrologerServiceService: ~
+
+    # Repositories
+    App\Repository\ServiceRepository: ~
+    App\Repository\AstrologerRepository: ~
+    App\Repository\OrderRepository: ~
+
+    # Exceptions
+    App\Exception\Listener\ExceptionListener:
+        tags:
+        - { name: kernel.event_listener, event: kernel.exception, priority: -16 }
+
+    App\Exception\Listener\AppExceptionListener:
+        tags:
+        - { name: kernel.event_listener, event: kernel.exception, priority: 16 }
+
+    App\Serializer\ExceptionNormalizer:
+        tags: [{name: serializer.normalizer, priority: 8}]

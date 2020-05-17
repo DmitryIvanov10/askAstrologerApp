@@ -9,13 +9,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AstrologerRepository::class)
  * @ORM\Table(indexes={@Index(name="email", columns={"email"})})
+ * @UniqueEntity(fields={"email"}, message="An astrologer with this email already exists.")
+ * @UniqueEntity("imageFilename")
  */
-class Astrologer
+class Astrologer implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -33,7 +37,7 @@ class Astrologer
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
-    private ?string $surname;
+    private ?string $surname = null;
 
     /**
      * @ORM\Column(type="date", name="date_of_birth")
@@ -56,9 +60,9 @@ class Astrologer
     private string $description;
 
     /**
-     * @ORM\Column(type="string", name="image_path", length=255, nullable=true, unique=true)
+     * @ORM\Column(type="string", name="image_filename", length=255, nullable=true, unique=true)
      */
-    private ?string $imagePath;
+    private ?string $imageFilename = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="astrologer", fetch="EXTRA_LAZY")
@@ -136,14 +140,14 @@ class Astrologer
         return $this;
     }
 
-    public function getImagePath(): ?string
+    public function getImageFilename(): ?string
     {
-        return $this->imagePath;
+        return $this->imageFilename;
     }
 
-    public function setImagePath(?string $imagePath): self
+    public function setImageFilename(?string $imageFilename): self
     {
-        $this->imagePath = $imagePath;
+        $this->imageFilename = $imageFilename;
         return $this;
     }
 
@@ -184,5 +188,18 @@ class Astrologer
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'surname' => $this->getSurname(),
+            'dateOfBirth' => $this->getDateOfBirth()->format('d.m.Y'),
+            'email' => $this->getEmail(),
+            'personalInfo' => $this->getDescription(),
+            'imageFilename' => $this->getImageFilename()
+        ];
     }
 }

@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  */
-class Order
+class Order implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -74,12 +75,6 @@ class Order
      * @ORM\Column(type="datetime")
      */
     private DateTimeInterface $updatedAt;
-
-    public function __construct()
-    {
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
-    }
 
     public function getId(): int
     {
@@ -157,14 +152,40 @@ class Order
         return $this->createdAt;
     }
 
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new DateTimeImmutable();
+    }
+
     public function getUpdatedAt(): DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(): self
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setUpdatedAt(): void
     {
         $this->updatedAt = new DateTimeImmutable();
-        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'status' => $this->getStatus(),
+            'astrologerId' => $this->getAstrologer()->getId(),
+            'serviceId' => $this->getService()->getId(),
+            'price' => $this->getPrice(),
+            'customerEmail' => $this->getCustomerEmail(),
+            'customerName' => $this->getCustomerName(),
+            'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updatedAt' => $this->getUpdatedAt()->format('Y-m-d H:i:s')
+        ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         @UniqueConstraint(name="astrologer_service", columns={"astrologer_id", "service_id"})
  *     }
  * )
+ * @UniqueEntity(fields={"astrologer","service"}, message="An astrologer already has this service.")
  */
 class AstrologerService
 {

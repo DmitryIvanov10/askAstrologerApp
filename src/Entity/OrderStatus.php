@@ -6,13 +6,16 @@ namespace App\Entity;
 use App\Repository\OrderStatusRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use JsonSerializable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=OrderStatusRepository::class)
  * @ORM\Table(name="order_status", indexes={@Index(name="name", columns={"name"})})
+ * @UniqueEntity(fields={"name"}, message="An order status with this name already exists.")
  */
-class OrderStatus
+class OrderStatus implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -40,5 +43,13 @@ class OrderStatus
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName()
+        ];
     }
 }

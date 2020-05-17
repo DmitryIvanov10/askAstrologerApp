@@ -1,4 +1,82 @@
-php_info:
-    path: /php_info
-    controller: App\Controller\TestController::getPhpInfo
+################################################################################
+#
+# Astrologer
+#
+#####################
+#
+# Create Astrologer
+#
+#####################
+astrologer_create:
+    path: /astrologer
+    controller: App\Controller\AstrologerServiceController::createAstrologer
+    methods: POST
+#####################
+#
+# Get Astrologer
+#
+#####################
+astrologer_get:
+    path: /astrologer/{id}
+    controller: App\Controller\AstrologerServiceController::getAstrologer
     methods: GET
+#####################
+#
+# Get Astrologers
+#
+#####################
+astrologers_get:
+    path: /astrologers
+    controller: App\Controller\AstrologerServiceController::getAstrologers
+    methods: GET
+#####################
+#
+# Delete Astrologer
+#
+#####################
+astrologer_delete:
+    path: /astrologer/{id}
+    controller: App\Controller\AstrologerServiceController::deleteAstrologer
+    methods: DELETE
+
+
+################################################################################
+#
+# Service
+#
+#####################
+#
+# Create Service
+#
+#####################
+service_create:
+    path: /service
+    controller: App\Controller\AstrologerServiceController::createService
+    methods: POST
+#####################
+#
+# Get Service
+#
+#####################
+service_get:
+    path: /service/{id}
+    controller: App\Controller\AstrologerServiceController::getService
+    methods: GET
+#####################
+#
+# Get Services
+#
+#####################
+services_get:
+    path: /services
+    controller: App\Controller\AstrologerServiceController::getServices
+    methods: GET
+#####################
+#
+# Delete Service
+#
+#####################
+service_delete:
+    path: /service/{id}
+    controller: App\Controller\AstrologerServiceController::deleteService
+    methods: DELETE

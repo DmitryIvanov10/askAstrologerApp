@@ -3,9 +3,15 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Dto\ServiceDto;
 use App\Entity\Service;
+use App\Exception\BadArgumentException;
+use App\Exception\InfrastructureException;
+use App\Exception\NotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @method Service|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,37 +21,69 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ServiceRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private ValidatorInterface $validator;
+
+    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator)
     {
         parent::__construct($registry, Service::class);
+        $this->validator = $validator;
     }
 
-    // /**
-    //  * @return Service[] Returns an array of Service objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @throws InfrastructureException
+     * @throws BadArgumentException
+     */
+    public function createService(ServiceDto $serviceDto): void
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $service = new Service();
+        $service->setName($serviceDto->getName());
+        $service->setDescription($serviceDto->getDescription());
 
-    /*
-    public function findOneBySomeField($value): ?Service
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $errors = $this->validator->validate($service);
+
+        if (count($errors) > 0) {
+            throw new BadArgumentException((string)$errors);
+        }
+
+        $em = $this->getEntityManager();
+
+        try {
+            $em->persist($service);
+            $em->flush();
+        } catch (ORMException $exception) {
+            throw new InfrastructureException('Cannot create service', 0, $exception);
+        }
     }
-    */
+
+    /**
+     * @throws NotFoundException
+     */
+    public function get(int $id): Service
+    {
+        $service = $this->find($id);
+
+        if ($service instanceof Service) {
+            return $service;
+        }
+
+        throw new NotFoundException(Service::class, ['id' => $id]);
+    }
+
+    /**
+     * @throws InfrastructureException
+     * @throws NotFoundException
+     */
+    public function deleteService(int $id): void
+    {
+        $service = $this->get($id);
+
+        $em = $this->getEntityManager();
+
+        try {
+            $em->remove($service);
+            $em->flush();
+        } catch (ORMException $exception) {
+            throw new InfrastructureException('Cannot delete service', 0, $exception);
+        }
+    }
 }

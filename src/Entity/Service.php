@@ -8,13 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use JsonSerializable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ServiceRepository::class)
  * @ORM\Table(indexes={@Index(name="name", columns={"name"})})
+ * @UniqueEntity(fields={"name"}, message="A service with this name already exists.")
  */
-class Service
+class Service implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -30,7 +33,7 @@ class Service
     private string $name;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description;
 
@@ -114,5 +117,14 @@ class Service
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription()
+        ];
     }
 }
