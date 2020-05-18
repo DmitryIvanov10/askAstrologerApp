@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * TODO cover by unit test
+ */
 class AbstractApiController extends AbstractController
 {
     private ?Request $request;

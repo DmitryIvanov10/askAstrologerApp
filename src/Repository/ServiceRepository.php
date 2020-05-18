@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @method Service|null findOneBy(array $criteria, array $orderBy = null)
  * @method Service[]    findAll()
  * @method Service[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @codeCoverageIgnore
  */
 class ServiceRepository extends ServiceEntityRepository
 {

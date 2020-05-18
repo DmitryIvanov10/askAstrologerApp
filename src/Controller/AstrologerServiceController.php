@@ -18,6 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use TypeError;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AstrologerServiceController extends AbstractApiController
 {
     /**

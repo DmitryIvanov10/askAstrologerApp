@@ -5,6 +5,9 @@ namespace App\Dto;
 
 use DateTimeImmutable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AstrologerDto
 {
     private string $name;

@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         @Index(name="customer_email", columns={"customer_email"})
  *     }
  * )
+ * @codeCoverageIgnore
  */
 class Order implements JsonSerializable
 {

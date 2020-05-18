@@ -12,11 +12,6 @@ Test app to simulate the astrology application
 1. ```git clone git@github.com:DmitryIvanov10/askAstrologerApp.git```
 2. ```cd askAstrologerApp```
 3. ```docker-compose up --build -d```
-3. ```docker exec -it php sh```
-4. Inside php container: 
- - ```composer update```
- - ```composer install```
- - ```php bin/console doctrine:migrations:migrate```
- - ```php bin/console doctrine:fixtures:load ```
+4. ```docker exec -d php make fresh```
 5. Add ```127.0.0.1 app.local``` to `/etc/hosts`
 6. Use `http://app.local:81` as a host for the application

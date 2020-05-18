@@ -8,6 +8,9 @@ use App\Exception\NotFoundException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * TODO cover with unit test
+ */
 final class AppExceptionListener
 {
     public function __invoke(ExceptionEvent $event): void

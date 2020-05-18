@@ -11,7 +11,10 @@ use App\Entity\Service;
 use App\Exception\BadArgumentException;
 use App\Exception\InfrastructureException;
 use App\Exception\NotFoundException;
+use App\ValueObject\OrderSpreadsheetValues;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -21,6 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @method Order|null findOneBy(array $criteria, array $orderBy = null)
  * @method Order[]    findAll()
  * @method Order[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @codeCoverageIgnore
  */
 class OrderRepository extends ServiceEntityRepository
 {
@@ -96,9 +100,12 @@ class OrderRepository extends ServiceEntityRepository
     /**
      * @throws BadArgumentException
      * @throws InfrastructureException
+     * @throws NotFoundException
      */
-    public function updateOrderStatus(Order $order, OrderStatus $orderStatus): Order
+    public function updateOrderStatus(int $orderId, OrderStatus $orderStatus): Order
     {
+        $order = $this->get($orderId);
+
         $order->setStatus($orderStatus);
 
         return $this->save($order);
@@ -126,5 +133,61 @@ class OrderRepository extends ServiceEntityRepository
         }
 
         return $orders;
+    }
+
+    /**
+     * @throws InfrastructureException
+     * @throws NotFoundException
+     */
+    public function getOrderSpreadsheetValues(int $orderId): OrderSpreadsheetValues
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $qb
+            ->select([
+                'o.id as orderId',
+                'os.id as statusId',
+                'os.name as statusName',
+                'a.id as astrologerId',
+                'a.name as astrologerName',
+                'a.email as astrologerEmail',
+                's.id as serviceId',
+                's.name as serviceName',
+                'o.price',
+                'o.customerEmail',
+                'o.customerName',
+                'o.createdAt',
+                'o.updatedAt'
+            ])
+            ->join('o.status', 'os')
+            ->join('o.astrologer', 'a')
+            ->join('o.service', 's')
+            ->andWhere(
+                $qb->expr()->eq('o.id', $orderId)
+            );
+
+        try {
+            $orderData = $qb->getQuery()->getSingleResult();
+        } catch (NoResultException $exception) {
+            throw new NotFoundException(Order::class, ['id' => $orderId], $exception);
+        } catch (NonUniqueResultException $exception) {
+            throw new InfrastructureException(sprintf('Non-unique order ID %s', $orderId), 0, $exception);
+        }
+
+        return new OrderSpreadsheetValues(
+            $orderData['orderId'],
+            $orderData['statusId'],
+            $orderData['statusName'],
+            $orderData['astrologerId'],
+            $orderData['astrologerName'],
+            $orderData['astrologerEmail'],
+            $orderData['serviceId'],
+            $orderData['serviceName'],
+            (float)$orderData['price'],
+            $orderData['customerEmail'],
+            $orderData['customerName'],
+            $orderData['createdAt'],
+            $orderData['updatedAt']
+        );
     }
 }

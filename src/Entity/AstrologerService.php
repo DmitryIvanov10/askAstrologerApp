@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  * @UniqueEntity(fields={"astrologer","service"}, message="An astrologer already has this service.")
+ * @codeCoverageIgnore
  */
 class AstrologerService implements JsonSerializable
 {

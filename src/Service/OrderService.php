@@ -13,23 +13,29 @@ use App\Repository\OrderRepository;
 use App\Repository\OrderStatusRepository;
 use App\Repository\ServiceRepository;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OrderService
 {
     private OrderRepository $orderRepository;
     private AstrologerRepository $astrologerRepository;
     private ServiceRepository $serviceRepository;
     private OrderStatusRepository $orderStatusRepository;
+    private OrderGoogleSpreadsheetsService $orderGoogleSpreadsheetsService;
 
     public function __construct(
         OrderRepository $orderRepository,
         AstrologerRepository $astrologerRepository,
         ServiceRepository $serviceRepository,
-        OrderStatusRepository $orderStatusRepository
+        OrderStatusRepository $orderStatusRepository,
+        OrderGoogleSpreadsheetsService $orderGoogleSpreadsheetsService
     ) {
         $this->orderRepository = $orderRepository;
         $this->astrologerRepository = $astrologerRepository;
         $this->serviceRepository = $serviceRepository;
         $this->orderStatusRepository = $orderStatusRepository;
+        $this->orderGoogleSpreadsheetsService = $orderGoogleSpreadsheetsService;
     }
 
     /**
@@ -64,10 +70,22 @@ class OrderService
      */
     public function payOrder(int $id): Order
     {
-        return $this->orderRepository->updateOrderStatus(
-            $this->orderRepository->get($id),
+        // TODO here the logic of payment may be integrated
+
+        $order = $this->orderRepository->updateOrderStatus(
+            $id,
             $this->orderStatusRepository->getStatusPaid()
         );
+
+        try {
+            // TODO make this operation via queue
+            $this->saveOrderToSpreadsheet($id);
+        } catch (InfrastructureException $exception) {
+            // TODO this should be handled via queue retry
+            // Do nothing
+        }
+
+        return $order;
     }
 
     /**
@@ -84,5 +102,16 @@ class OrderService
     public function findOrders(): array
     {
         return $this->orderRepository->findOrders();
+    }
+
+    /**
+     * @throws InfrastructureException
+     * @throws NotFoundException
+     */
+    public function saveOrderToSpreadsheet(int $id): void
+    {
+        $this->orderGoogleSpreadsheetsService->saveOrderToSpreadsheet(
+            $this->orderRepository->getOrderSpreadsheetValues($id)
+        );
     }
 }

@@ -18,6 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(indexes={@Index(name="email", columns={"email"})})
  * @UniqueEntity(fields={"email"}, message="An astrologer with this email already exists.")
  * @UniqueEntity("imageFilename")
+ * @codeCoverageIgnore
  */
 class Astrologer implements JsonSerializable
 {

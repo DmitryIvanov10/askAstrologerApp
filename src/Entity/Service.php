@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=ServiceRepository::class)
  * @ORM\Table(indexes={@Index(name="name", columns={"name"})})
  * @UniqueEntity(fields={"name"}, message="A service with this name already exists.")
+ * @codeCoverageIgnore
  */
 class Service implements JsonSerializable
 {

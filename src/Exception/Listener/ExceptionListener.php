@@ -11,6 +11,9 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
+/**
+ * TODO cover with unit test
+ */
 final class ExceptionListener
 {
     private NormalizerInterface $serializer;

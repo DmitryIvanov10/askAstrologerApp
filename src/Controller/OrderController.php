@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use TypeError;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OrderController extends AbstractApiController
 {
     /**
@@ -49,10 +52,9 @@ class OrderController extends AbstractApiController
      */
     public function payOrder(int $id, OrderService $orderService): JsonResponse
     {
-        return $this->getPositiveResponse(
-            $orderService->payOrder($id),
-            'Order successfully paid'
-        );
+        $order = $orderService->payOrder($id);
+
+        return $this->getPositiveResponse($order, 'Order successfully paid');
     }
 
     /**

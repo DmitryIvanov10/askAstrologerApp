@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @method AstrologerService|null findOneBy(array $criteria, array $orderBy = null)
  * @method AstrologerService[]    findAll()
  * @method AstrologerService[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @codeCoverageIgnore
  */
 class AstrologerServiceRepository extends ServiceEntityRepository
 {

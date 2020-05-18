@@ -25,8 +25,8 @@
 !bin/symfony_requirements
 
 # Assets and user uploads
-/web/bundles/
-/web/uploads/
+!assets/uploads/images/.gitkeep
+assets/uploads/images/*
 
 # PHPUnit
 /phpunit.xml

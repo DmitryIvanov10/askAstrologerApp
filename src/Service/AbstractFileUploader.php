@@ -7,6 +7,9 @@ use App\Exception\AppException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * TODO cover with unit test
+ */
 abstract class AbstractFileUploader
 {
     private const FILE_NAME_TEMPLATE = '%s-%s.%s';

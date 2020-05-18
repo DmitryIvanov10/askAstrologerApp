@@ -18,6 +18,9 @@ use App\Repository\AstrologerServiceRepository;
 use App\Repository\ServiceRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AstrologerServiceService
 {
     private ServiceRepository $serviceRepository;

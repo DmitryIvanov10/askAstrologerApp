@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=OrderStatusRepository::class)
  * @ORM\Table(name="order_status", indexes={@Index(name="name", columns={"name"})})
  * @UniqueEntity(fields={"name"}, message="An order status with this name already exists.")
+ * @codeCoverageIgnore
  */
 class OrderStatus implements JsonSerializable
 {

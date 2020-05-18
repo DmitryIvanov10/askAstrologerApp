@@ -5,6 +5,9 @@ namespace App\Exception;
 
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 class NotFoundException extends AppException
 {
     private const MESSAGE_FORMAT = "Cannot find Model %s with filter by: '%s'";

@@ -1,17 +1,24 @@
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
+imports:
+- { resource: google_client_parameters.yaml}
+
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    uploads_directory: '%kernel.project_dir%/assets/uploads'
+    app.uploads_directory: '%kernel.project_dir%/assets/uploads'
+    app.security.keys_dir: "%kernel.project_dir%/config/packages/%kernel.environment%/keys/"
+    app.google.spreadsheet.orders: "%env(resolve:ORDERS_GOOGLE_SPREADSHEET_NAME)%"
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            $uploadsDirectory: '%uploads_directory%'
+            $uploadsDirectory: '%app.uploads_directory%'
+            $googleSpreadsheetId: '%env(resolve:GOOGLE_SPREADSHEET_ID)%'
+            $orderGoogleSpreadsheetName: '%app.google.spreadsheet.orders%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -19,8 +26,9 @@ services:
         resource: '../src/*'
         exclude:
         - '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-        - '../src/Form'
-        - '../src/Dto'
+        - '../src/Form.*'
+        - '../src/Dto/*'
+        - '../src/ValueObject/*'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -33,8 +41,24 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    # Application services
     App\Service\AbstractFileUploader: ~
     App\Service\ImageUploader: ~
+    App\Service\AbstractGoogleSpreadsheetsService: ~
+    App\Service\OrderGoogleSpreadsheetsService: ~
+
+    Google_Client:
+        class: Google_Client
+        factory: '@App\Factory\GoogleClientFactory'
+        arguments:
+            $googleClientConfig: '%app.google_client.params%'
+
+    Google_Service_Sheets:
+        class: Google_Service_Sheets
+        arguments:
+            $client: '@Google_Client'
+
+    # Entity Services
     App\Service\AstrologerServiceService: ~
     App\Service\OrderService: ~
 
@@ -43,6 +67,9 @@ services:
     App\Repository\AstrologerRepository: ~
     App\Repository\OrderRepository: ~
     App\Repository\OrderStatusRepository: ~
+
+    # Factories
+    App\Factory\GoogleClientFactory: ~
 
     # Exceptions
     App\Exception\Listener\ExceptionListener:

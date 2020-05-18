@@ -5,6 +5,9 @@ namespace App\Exception;
 
 use Exception;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AppException extends Exception
 {
 
