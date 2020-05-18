@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use JsonSerializable;
@@ -28,25 +28,25 @@ class Order implements JsonSerializable
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\OrderStatus", fetch="EAGER")
      * @ORM\JoinColumn(name="status_id", nullable=false)
      */
-    private OrderStatus $status;
+    private ?OrderStatus $status = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="orders", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Astrologer $astrologer;
+    private ?Astrologer $astrologer = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="orders", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Service $service;
+    private ?Service $service = null;
 
     /**
      * @ORM\Column(type="decimal", precision=8, scale=2)
@@ -69,19 +69,25 @@ class Order implements JsonSerializable
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeImmutable $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeImmutable $updatedAt;
+    private DateTime $updatedAt;
 
-    public function getId(): int
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStatus(): OrderStatus
+    public function getStatus(): ?OrderStatus
     {
         return $this->status;
     }
@@ -92,7 +98,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getAstrologer(): Astrologer
+    public function getAstrologer(): ?Astrologer
     {
         return $this->astrologer;
     }
@@ -103,7 +109,7 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getService(): Service
+    public function getService(): ?Service
     {
         return $this->service;
     }
@@ -147,24 +153,24 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     public function setCreatedAt(): void
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new DateTime();
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
     public function setUpdatedAt(): void
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTime();
     }
 
     public function jsonSerialize(): array
@@ -172,8 +178,8 @@ class Order implements JsonSerializable
         return [
             'id' => $this->getId(),
             'status' => $this->getStatus(),
-            'astrologerId' => $this->getAstrologer()->getId(),
-            'serviceId' => $this->getService()->getId(),
+            'astrologer' => $this->getAstrologer(),
+            'service' => $this->getService(),
             'price' => $this->getPrice(),
             'customerEmail' => $this->getCustomerEmail(),
             'customerName' => $this->getCustomerName(),

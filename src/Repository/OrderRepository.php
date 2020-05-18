@@ -103,4 +103,28 @@ class OrderRepository extends ServiceEntityRepository
 
         return $this->save($order);
     }
+
+    /**
+     * @return Order[]
+     */
+    public function findOrders(): array
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $ordersData = $qb
+            ->select('o as order')
+            ->join('o.status', 'os')
+            ->join('o.astrologer', 'a')
+            ->join('o.service', 's')
+            ->getQuery()
+            ->getResult();
+
+        $orders = [];
+
+        foreach ($ordersData as $orderData) {
+            $orders[] = $orderData['order'];
+        }
+
+        return $orders;
+    }
 }

@@ -26,7 +26,7 @@ class AstrologerService implements JsonSerializable
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="astrologerServices", fetch="EAGER")
@@ -51,7 +51,7 @@ class AstrologerService implements JsonSerializable
      */
     private bool $active = true;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -83,6 +83,6 @@ class OrderService
      */
     public function findOrders(): array
     {
-        return $this->orderRepository->findAll();
+        return $this->orderRepository->findOrders();
     }
 }

@@ -24,7 +24,7 @@ class Service implements JsonSerializable
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=50, unique=true)
@@ -53,7 +53,7 @@ class Service implements JsonSerializable
         $this->orders = new ArrayCollection();
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
