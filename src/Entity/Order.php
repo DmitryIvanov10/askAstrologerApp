@@ -5,7 +5,6 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use JsonSerializable;
@@ -14,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  * @ORM\Table(
+ *     name="orders",
  *     indexes={
  *         @Index(name="astrologer_service", columns={"astrologer_id", "service_id"}),
  *         @Index(name="status", columns={"status_id"}),
@@ -31,19 +31,19 @@ class Order implements JsonSerializable
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\OrderStatus")
+     * @ORM\ManyToOne(targetEntity="App\Entity\OrderStatus", fetch="EAGER")
      * @ORM\JoinColumn(name="status_id", nullable=false)
      */
     private OrderStatus $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="orders")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="orders", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Astrologer $astrologer;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="orders")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="orders", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Service $service;
@@ -69,12 +69,12 @@ class Order implements JsonSerializable
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $updatedAt;
+    private DateTimeImmutable $updatedAt;
 
     public function getId(): int
     {
@@ -147,28 +147,21 @@ class Order implements JsonSerializable
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeInterface
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
     public function setCreatedAt(): void
     {
         $this->createdAt = new DateTimeImmutable();
     }
 
-    public function getUpdatedAt(): DateTimeInterface
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
     public function setUpdatedAt(): void
     {
         $this->updatedAt = new DateTimeImmutable();

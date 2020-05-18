@@ -65,7 +65,7 @@ class Astrologer implements JsonSerializable
     private ?string $imageFilename = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="astrologer", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="astrologer", fetch="LAZY")
      */
     private Collection $astrologerServices;
 

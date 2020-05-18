@@ -19,7 +19,6 @@ services:
         resource: '../src/*'
         exclude:
         - '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-        - '../src/DataFixtures'
         - '../src/Form'
         - '../src/Dto'
 
@@ -43,6 +42,7 @@ services:
     App\Repository\ServiceRepository: ~
     App\Repository\AstrologerRepository: ~
     App\Repository\OrderRepository: ~
+    App\Repository\OrderStatusRepository: ~
 
     # Exceptions
     App\Exception\Listener\ExceptionListener:

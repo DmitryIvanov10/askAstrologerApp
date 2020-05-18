@@ -142,10 +142,37 @@ service_delete:
 #
 #####################
 #
+# Get Order
+#
+#####################
+order_get:
+    path: /order/{id}
+    controller: App\Controller\OrderController::getOrder
+    methods: GET
+#####################
+#
+# Get Orders
+#
+#####################
+orders_get:
+    path: /orders
+    controller: App\Controller\OrderController::getOrders
+    methods: GET
+#####################
+#
 # Create Order
 #
 #####################
 order_create:
     path: /order
     controller: App\Controller\OrderController::createOrder
+    methods: POST
+#####################
+#
+# Pay Order
+#
+#####################
+order_pay:
+    path: /order/{id}
+    controller: App\Controller\OrderController::payOrder
     methods: POST

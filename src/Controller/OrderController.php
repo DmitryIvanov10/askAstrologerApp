@@ -41,4 +41,34 @@ class OrderController extends AbstractApiController
             'Order successfully created'
         );
     }
+
+    /**
+     * @throws BadArgumentException
+     * @throws InfrastructureException
+     * @throws NotFoundException
+     */
+    public function payOrder(int $id, OrderService $orderService): JsonResponse
+    {
+        return $this->getPositiveResponse(
+            $orderService->payOrder($id),
+            'Order successfully paid'
+        );
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function getOrder(int $id, OrderService $orderService): JsonResponse
+    {
+        return $this->getPositiveResponse(
+            $orderService->getOrder($id)
+        );
+    }
+
+    public function getOrders(OrderService $orderService): JsonResponse
+    {
+        return $this->getPositiveResponse(
+            $orderService->findOrders()
+        );
+    }
 }

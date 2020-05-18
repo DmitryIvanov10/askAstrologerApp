@@ -10,6 +10,7 @@ use App\Exception\InfrastructureException;
 use App\Exception\NotFoundException;
 use App\Repository\AstrologerRepository;
 use App\Repository\OrderRepository;
+use App\Repository\OrderStatusRepository;
 use App\Repository\ServiceRepository;
 
 class OrderService
@@ -17,15 +18,18 @@ class OrderService
     private OrderRepository $orderRepository;
     private AstrologerRepository $astrologerRepository;
     private ServiceRepository $serviceRepository;
+    private OrderStatusRepository $orderStatusRepository;
 
     public function __construct(
         OrderRepository $orderRepository,
         AstrologerRepository $astrologerRepository,
-        ServiceRepository $serviceRepository
+        ServiceRepository $serviceRepository,
+        OrderStatusRepository $orderStatusRepository
     ) {
         $this->orderRepository = $orderRepository;
         $this->astrologerRepository = $astrologerRepository;
         $this->serviceRepository = $serviceRepository;
+        $this->orderStatusRepository = $orderStatusRepository;
     }
 
     /**
@@ -42,9 +46,43 @@ class OrderService
             $orderDto->getAstrologerId(),
             $orderDto->getServiceId()
         )) {
-            return $this->orderRepository->createOrder($orderDto, $astrologer, $service);
+            return $this->orderRepository->createOrder(
+                $orderDto,
+                $astrologer,
+                $service,
+                $this->orderStatusRepository->getStatusNew()
+            );
         }
 
         throw new BadArgumentException('The astrologer doesn\'t have this service');
+    }
+
+    /**
+     * @throws BadArgumentException
+     * @throws InfrastructureException
+     * @throws NotFoundException
+     */
+    public function payOrder(int $id): Order
+    {
+        return $this->orderRepository->updateOrderStatus(
+            $this->orderRepository->get($id),
+            $this->orderStatusRepository->getStatusPaid()
+        );
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    public function getOrder(int $id): Order
+    {
+        return $this->orderRepository->get($id);
+    }
+
+    /**
+     * @return Order[]
+     */
+    public function findOrders(): array
+    {
+        return $this->orderRepository->findAll();
     }
 }

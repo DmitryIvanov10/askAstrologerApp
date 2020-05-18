@@ -1,5 +1,5 @@
-# nginx-php-symfony-mysql-dockerized-boilerplate
-Boilerplate for Symfony projects in docker
+# Ask Astrologer App
+Test app to simulate the astrology application
 
 ## Versions:
 **Symfony 4.4**
@@ -9,13 +9,14 @@ Boilerplate for Symfony projects in docker
 **MySQL 5.7**
 
 ## Install and run:
-1. ```git clone git@github.com:DmitryIvanov10/nginx-php-symfony-mysql-dockerized-boilerplate.git```
-2. ```cd nginx-php-symfony-mysql-dockerized-boilerplate```
+1. ```git clone git@github.com:DmitryIvanov10/askAstrologerApp.git```
+2. ```cd askAstrologerApp```
 3. ```docker-compose up --build -d```
 3. ```docker exec -it php sh```
 4. Inside php container: 
- 4.1. ```composer update```
- 4.2. ```composer install```
- 4.3. ```php bin/console doctrine:migrations:migrate```
- 4.4. ```php bin/console doctrine:fixtures:load ```
+ - ```composer update```
+ - ```composer install```
+ - ```php bin/console doctrine:migrations:migrate```
+ - ```php bin/console doctrine:fixtures:load ```
 5. Add ```127.0.0.1 app.local``` to `/etc/hosts`
+6. Use `http://app.local:81` as a host for the application

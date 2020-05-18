@@ -29,13 +29,13 @@ class AstrologerService implements JsonSerializable
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="astrologerServices", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="astrologerServices", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Astrologer $astrologer;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="astrologerServices", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="astrologerServices", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Service $service;
