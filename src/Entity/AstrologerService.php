@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use JsonSerializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @UniqueEntity(fields={"astrologer","service"}, message="An astrologer already has this service.")
  */
-class AstrologerService
+class AstrologerService implements JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -28,27 +29,27 @@ class AstrologerService
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="astrologerServices")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Astrologer", inversedBy="astrologerServices", fetch="LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private Astrologer $astrologer;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="astrologerServices")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="astrologerServices", fetch="LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     private Service $service;
 
     /**
      * @ORM\Column(type="decimal", precision=8, scale=2)
-     * @Assert\PositiveOrZero(message="Price cannot be negative.")
+     * @Assert\Positive(message="Price cannot be negative or zero.")
      */
     private float $price;
 
     /**
      * @ORM\Column(type="boolean", options={"default": 1})
      */
-    private bool $active;
+    private bool $active = true;
 
     public function getId(): int
     {
@@ -97,5 +98,14 @@ class AstrologerService
     {
         $this->active = $active;
         return $this;
+    }
+
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'service' => $this->getService(),
+            'price' => $this->getPrice()
+        ];
     }
 }

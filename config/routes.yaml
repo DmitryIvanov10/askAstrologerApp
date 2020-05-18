@@ -38,6 +38,60 @@ astrologer_delete:
     path: /astrologer/{id}
     controller: App\Controller\AstrologerServiceController::deleteAstrologer
     methods: DELETE
+#####################
+#
+# Add Service to Astrologer
+#
+#####################
+astrologer_service_add:
+    path: /astrologer/{astrologerId}/service/{serviceId}
+    controller: App\Controller\AstrologerServiceController::addServiceToAstrologer
+    methods: POST
+#####################
+#
+# Update Astrologer's Image
+#
+#####################
+astrologer_image_update:
+    path: /astrologer/{id}/image
+    controller: App\Controller\AstrologerServiceController::updateAstrologerImage
+    methods: POST
+#####################
+#
+# Update Astrologer Service
+#
+#####################
+astrologer_service_update:
+    path: /astrologer/{astrologerId}/service/{serviceId}
+    controller: App\Controller\AstrologerServiceController::updateAstrologerService
+    methods: PATCH
+#####################
+#
+# Delete Astrologer Service
+#
+#####################
+astrologer_service_delete:
+    path: /astrologer/{astrologerId}/service/{serviceId}
+    controller: App\Controller\AstrologerServiceController::deleteAstrologerService
+    methods: DELETE
+#####################
+#
+# Get Astrologer Services
+#
+#####################
+astrologer_services_get:
+    path: /astrologer/{id}/services
+    controller: App\Controller\AstrologerServiceController::getAstrologerServices
+    methods: GET
+#####################
+#
+# Get Astrologers Services
+#
+#####################
+astrologers_services_get:
+    path: /astrologers/services
+    controller: App\Controller\AstrologerServiceController::getAstrologersServices
+    methods: GET
 
 
 ################################################################################
@@ -80,3 +134,18 @@ service_delete:
     path: /service/{id}
     controller: App\Controller\AstrologerServiceController::deleteService
     methods: DELETE
+
+
+################################################################################
+#
+# Order
+#
+#####################
+#
+# Create Order
+#
+#####################
+order_create:
+    path: /order
+    controller: App\Controller\OrderController::createOrder
+    methods: POST

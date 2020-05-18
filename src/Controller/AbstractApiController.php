@@ -36,7 +36,7 @@ class AbstractApiController extends AbstractController
     protected function getJsonDataFromRequest(Request $request): array
     {
         if ($request->getContentType() != 'json' || !$request->getContent()) {
-            throw new BadRequestHttpException('Incorrect input json parameters');
+            throw new BadRequestHttpException('Incorrect request json parameters');
         }
 
         $data = json_decode($request->getContent(), true);

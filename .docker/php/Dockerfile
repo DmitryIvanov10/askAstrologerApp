@@ -26,8 +26,8 @@ RUN apk update && \
 # install xDebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-RUN echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/default.ini \
-    && echo "serverName=apiv2.local" >> /usr/local/etc/php/conf.d/default.ini \
+RUN echo "xdebug.remote_host=192.168.220.1" >> /usr/local/etc/php/conf.d/default.ini \
+    && echo "serverName=app.local" >> /usr/local/etc/php/conf.d/default.ini \
     && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/default.ini \
     && echo "xdebug.remote_autostart=0" >> /usr/local/etc/php/conf.d/default.ini \
     && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/default.ini \

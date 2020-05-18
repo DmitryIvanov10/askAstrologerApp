@@ -10,8 +10,12 @@ Boilerplate for Symfony projects in docker
 
 ## Install and run:
 1. ```git clone git@github.com:DmitryIvanov10/nginx-php-symfony-mysql-dockerized-boilerplate.git```
-2. ```docker-compose up --build -d```
-3. ```composer update``` / ```composer install``` (on host machine or inside php container)
-4. Add ```127.0.0.1 app.local``` to `/etc/hosts`
-5. The app is available at `app.local:81`
-6. Check if everything works and get `phpinfo()` at `app.local:81/php_info`
+2. ```cd nginx-php-symfony-mysql-dockerized-boilerplate```
+3. ```docker-compose up --build -d```
+3. ```docker exec -it php sh```
+4. Inside php container: 
+ 4.1. ```composer update```
+ 4.2. ```composer install```
+ 4.3. ```php bin/console doctrine:migrations:migrate```
+ 4.4. ```php bin/console doctrine:fixtures:load ```
+5. Add ```127.0.0.1 app.local``` to `/etc/hosts`

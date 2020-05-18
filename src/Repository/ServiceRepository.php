@@ -33,7 +33,7 @@ class ServiceRepository extends ServiceEntityRepository
      * @throws InfrastructureException
      * @throws BadArgumentException
      */
-    public function createService(ServiceDto $serviceDto): void
+    public function createService(ServiceDto $serviceDto): Service
     {
         $service = new Service();
         $service->setName($serviceDto->getName());
@@ -53,6 +53,8 @@ class ServiceRepository extends ServiceEntityRepository
         } catch (ORMException $exception) {
             throw new InfrastructureException('Cannot create service', 0, $exception);
         }
+
+        return $service;
     }
 
     /**

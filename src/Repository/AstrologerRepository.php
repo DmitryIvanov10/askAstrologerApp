@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Dto\AstrologerDto;
 use App\Entity\Astrologer;
+use App\Entity\AstrologerService;
 use App\Exception\BadArgumentException;
 use App\Exception\InfrastructureException;
 use App\Exception\NotFoundException;
@@ -33,15 +34,8 @@ class AstrologerRepository extends ServiceEntityRepository
      * @throws BadArgumentException
      * @throws InfrastructureException
      */
-    public function createAstrologer(AstrologerDto $astrologerDto): void
+    public function save(Astrologer $astrologer): Astrologer
     {
-        $astrologer = new Astrologer();
-        $astrologer->setName($astrologerDto->getName());
-        $astrologer->setSurname($astrologerDto->getSurname());
-        $astrologer->setDateOfBirth($astrologerDto->getDateOfBirth());
-        $astrologer->setEmail($astrologerDto->getEmail());
-        $astrologer->setDescription($astrologerDto->getDescription());
-
         $errors = $this->validator->validate($astrologer);
 
         if (count($errors) > 0) {
@@ -54,8 +48,26 @@ class AstrologerRepository extends ServiceEntityRepository
             $em->persist($astrologer);
             $em->flush();
         } catch (ORMException $exception) {
-            throw new InfrastructureException('Cannot create astrologer', 0, $exception);
+            throw new InfrastructureException('Cannot save astrologer to the DataBase', 0, $exception);
         }
+
+        return $astrologer;
+    }
+
+    /**
+     * @throws BadArgumentException
+     * @throws InfrastructureException
+     */
+    public function createAstrologer(AstrologerDto $astrologerDto): Astrologer
+    {
+        $astrologer = new Astrologer();
+        $astrologer->setName($astrologerDto->getName());
+        $astrologer->setSurname($astrologerDto->getSurname());
+        $astrologer->setDateOfBirth($astrologerDto->getDateOfBirth());
+        $astrologer->setEmail($astrologerDto->getEmail());
+        $astrologer->setDescription($astrologerDto->getDescription());
+
+        return $this->save($astrologer);
     }
 
     /**
@@ -88,5 +100,65 @@ class AstrologerRepository extends ServiceEntityRepository
         } catch (ORMException $exception) {
             throw new InfrastructureException('Cannot delete astrologer', 0, $exception);
         }
+    }
+
+    /**
+     * @return AstrologerService[]
+     */
+    public function findAstrologerServices(int $id): array
+    {
+        $qb = $this->_em->createQueryBuilder()
+             ->select('asv')
+             ->from(AstrologerService::class, 'asv');
+
+        $qb
+            ->join('asv.astrologer', 'a')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->eq('a.id', $id),
+                $qb->expr()->eq('asv.active', true)
+            ));
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function isAstrologerHasService(int $astrologerId, int $serviceId): bool
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->join('a.astrologerServices', 'asc')
+            ->join('asc.service', 's')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->eq('a.id', $astrologerId),
+                $qb->expr()->eq('s.id', $serviceId)
+            ));
+
+        return count($qb->getQuery()->getResult()) > 0;
+    }
+
+    /**
+     * @return array astrologerId => AstrologerService[]
+     */
+    public function findAstrologersServices(): array
+    {
+        $qb = $this->_em->createQueryBuilder()
+            ->select(['a.id as astrologerId', 'asv as astrologerService'])
+            ->from(AstrologerService::class, 'asv');
+
+        $qb
+            ->join('asv.astrologer', 'a')
+            ->andWhere(
+                $qb->expr()->eq('asv.active', true)
+            );
+
+        $astrologersServicesData = $qb->getQuery()->getResult();
+
+        $astrologersServices = [];
+
+        foreach ($astrologersServicesData as $astrologerServicesData) {
+            $astrologersServices[$astrologerServicesData['astrologerId']][] = $astrologerServicesData['astrologerService'];
+        }
+
+        return $astrologersServices;
     }
 }

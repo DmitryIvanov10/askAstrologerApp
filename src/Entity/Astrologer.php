@@ -65,7 +65,7 @@ class Astrologer implements JsonSerializable
     private ?string $imageFilename = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="astrologer", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="astrologer", fetch="EAGER")
      */
     private Collection $astrologerServices;
 
@@ -157,6 +157,29 @@ class Astrologer implements JsonSerializable
     public function getAstrologerServices(): Collection
     {
         return $this->astrologerServices;
+    }
+
+    public function addAstrologerService(AstrologerService $astrologerService): self
+    {
+        if (!$this->astrologerServices->contains($astrologerService)) {
+            $this->astrologerServices[] = $astrologerService;
+            $astrologerService->setAstrologer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAstrologerService(AstrologerService $astrologerService): self
+    {
+        if ($this->astrologerServices->contains($astrologerService)) {
+            $this->astrologerServices->removeElement($astrologerService);
+            // set the owning side to null (unless already changed)
+            if ($astrologerService->getAstrologer() === $this) {
+                $astrologerService->setAstrologer(null);
+            }
+        }
+
+        return $this;
     }
 
     /**

@@ -11,11 +11,11 @@ abstract class AbstractFileUploader
 {
     private const FILE_NAME_TEMPLATE = '%s-%s.%s';
 
-    private string $targetDirectory;
+    private string $uploadsDirectory;
 
-    public function __construct(string $targetDirectory)
+    public function __construct(string $uploadsDirectory)
     {
-        $this->targetDirectory = $targetDirectory;
+        $this->uploadsDirectory = $uploadsDirectory;
     }
 
     /**
@@ -36,14 +36,14 @@ abstract class AbstractFileUploader
         );
 
         try {
-            $file->move($this->getTargetDirectory(), $fileName);
+            $file->move($this->getUploadsDirectory(), $fileName);
         } catch (FileException $exception) {
             throw new AppException(
                 sprintf(
                     'Cannot save file %s with extension %s to %s',
                     $safeFilename,
                     $file->guessExtension(),
-                    $this->getTargetDirectory()
+                    $this->getUploadsDirectory()
                 ), 0, $exception
             );
         }
@@ -51,11 +51,11 @@ abstract class AbstractFileUploader
         return $fileName;
     }
 
-    public function getTargetDirectory(): string
+    public function getUploadsDirectory(): string
     {
         return sprintf(
             '%s/%s',
-            $this->targetDirectory,
+            $this->uploadsDirectory,
             $this->getFileTypeSubdirectory()
         );
     }

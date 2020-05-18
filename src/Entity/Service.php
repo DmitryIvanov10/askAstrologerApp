@@ -38,7 +38,7 @@ class Service implements JsonSerializable
     private ?string $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="service", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\AstrologerService", mappedBy="service", fetch="LAZY")
      */
     private Collection $astrologerServices;
 
@@ -86,6 +86,29 @@ class Service implements JsonSerializable
     public function getAstrologerServices(): Collection
     {
         return $this->astrologerServices;
+    }
+
+    public function addAstrologerService(AstrologerService $astrologerService): self
+    {
+        if (!$this->astrologerServices->contains($astrologerService)) {
+            $this->astrologerServices[] = $astrologerService;
+            $astrologerService->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAstrologerService(AstrologerService $astrologerService): self
+    {
+        if ($this->astrologerServices->contains($astrologerService)) {
+            $this->astrologerServices->removeElement($astrologerService);
+            // set the owning side to null (unless already changed)
+            if ($astrologerService->getService() === $this) {
+                $astrologerService->setService(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
